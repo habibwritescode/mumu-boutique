@@ -1,13 +1,15 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { ReactComponent as Logo } from '../../assets/crown.svg'
-import { auth } from '../../firebase/firebase.utils'
 import { connect } from 'react-redux'
 
-import './header.styles.scss'
 
-function Header({ currentUser }) {
-    console.log('currentuser:', currentUser)
+import { ReactComponent as Logo } from '../../assets/crown.svg'
+import { auth } from '../../firebase/firebase.utils'
+import './header.styles.scss'
+import CartIcon from '../cart-icon/cart-icon.component'
+import CartDropdown from '../cart-dropdown/cart-dropdown.component'
+
+function Header({ currentUser, hidden }) {
     return (
         <div className="header">
             <Link to="/" className="logo-container">
@@ -27,13 +29,20 @@ function Header({ currentUser }) {
                         :
                         <Link className="option" to="/signin">SIGN IN</Link>
                 }
+                <CartIcon />
             </div>
+            {hidden ?
+                null
+                :
+                <CartDropdown />
+            }
         </div>
     )
 }
 
-
-const mapStateToProps = state => ({
-    currentUser: state.user.currentUser
+const mapStateToProps = ({ user: { currentUser }, cart: { hidden } }) => ({
+    // Above syntax is Destructuring nested values off the state
+    currentUser,
+    hidden
 })
 export default connect(mapStateToProps)(Header)
