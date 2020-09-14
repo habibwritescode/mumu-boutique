@@ -16,6 +16,9 @@ const config = {
     measurementId: "G-HSM6VV3D95"
 };
 
+// Initialize Firebase
+firebase.initializeApp(config);
+
 export const createUserProfileDocument = async (userAuth, additionalData) => {
     if (!userAuth) return;
 
@@ -42,8 +45,18 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
     return userRef;
 
 }
-// Initialize Firebase
-firebase.initializeApp(config);
+
+export const addCollectionsAndDocuments = async (collectionKey, objectsToAdd) => {
+    const collectionRef = firestore.collection(collectionKey);
+
+    const batch = firestore.batch();
+    objectsToAdd.forEach(obj => {
+        const newDocRef = collectionRef.doc();
+        batch.set(newDocRef, obj)
+    });
+
+    return await batch.commit()
+};
 
 export const auth = firebase.auth();
 export const firestore = firebase.firestore();
